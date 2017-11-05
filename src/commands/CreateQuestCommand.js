@@ -1,7 +1,7 @@
 'use strict';
 
-import uuid from "uuid";
-import moment from "moment-timezone";
+import uuid from 'uuid';
+import moment from 'moment-timezone';
 
 export default class {
   constructor(questsService) {
@@ -17,7 +17,8 @@ export default class {
       id: uuid.v1(),
       name,
       detailsLink,
-      endDate
+      endDate,
+      isComplete: endDate <= moment().unix()
     };
 
     return this.questsService.put(quest);

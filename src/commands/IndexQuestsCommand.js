@@ -6,6 +6,6 @@ export default class {
   }
 
   async execute() {
-    return this.questsService.getAll();
+    return this.questsService.index();
   }
 }

@@ -77,12 +77,12 @@ functions:
               path: quests
               method: get
 
-  updateQuest:
-      handler: src/index.updateQuest
+  completeQuest:
+      handler: src/index.completeQuest
       events:
         - http:
-            path: quests/{id}
-            method: put
+            path: quests/{id}/complete
+            method: post
 
   destroyQuest:
         handler: src/index.destroyQuest

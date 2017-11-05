@@ -4,6 +4,7 @@
   },
   "body": {
     "name": "New quest name",
-    "detailsLink": "http://www.example.com"
+    "detailsLink": "http://www.example.com",
+    "endDate": "2017-11-10"
   }
 }

@@ -17,9 +17,10 @@ export async function createQuest(event, context, callback) {
   const createQuestCommand = new CreateQuestCommand(questsService);
 
   try {
-    const data = await createQuestCommand.execute(event.body.name, event.body.detailsLink);
+    const data = await createQuestCommand.execute(event.body.name, event.body.detailsLink, event.body.endDate);
     success(data, callback);
   } catch (e) {
+    console.log(e);
     failure(null, callback);
   }
 }
@@ -28,7 +29,7 @@ export async function updateQuest(event, context, callback) {
   const updateQuestCommand = new UpdateQuestCommand(questsService);
 
   try {
-    const data = await updateQuestCommand.execute(event.pathParameters.id, event.body.name, event.body.detailsLink);
+    const data = await updateQuestCommand.execute(event.pathParameters.id, event.body.name, event.body.detailsLink, event.body.endDate);
     success(data, callback);
   } catch (e) {
     failure(null, callback);

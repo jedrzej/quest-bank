@@ -1,3 +1,5 @@
+'use strict';
+
 export default class {
   constructor (documentClient, tableName) {
     this.db = documentClient;
@@ -39,7 +41,7 @@ export default class {
       Item
     };
 
-    return this.db.put(params).promise();
+    return this.db.put(params).promise().then(() => Item);
   }
 
   update (id, UpdateExpression, ExpressionAttributeValues) {

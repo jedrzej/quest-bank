@@ -1,3 +1,5 @@
+'use strict';
+
 import uuid from "uuid";
 
 export default class {

@@ -63,6 +63,34 @@ functions:
           path: quests
           method: post
 
+  showQuest:
+        handler: src/index.showQuest
+        events:
+          - http:
+              path: quests/{id}
+              method: get
+
+  indexQuests:
+        handler: src/index.indexQuests
+        events:
+          - http:
+              path: quests
+              method: get
+
+  updateQuest:
+      handler: src/index.updateQuest
+      events:
+        - http:
+            path: quests/{id}
+            method: put
+
+  destroyQuest:
+        handler: src/index.destroyQuest
+        events:
+          - http:
+              path: quests/{id}
+              method: delete
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

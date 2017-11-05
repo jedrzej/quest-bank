@@ -64,32 +64,41 @@ functions:
           method: post
 
   showQuest:
-        handler: src/index.showQuest
-        events:
-          - http:
-              path: quests/{id}
-              method: get
+    handler: src/index.showQuest
+    events:
+      - http:
+          path: quests/{id}
+          method: get
+          request:
+            parameters:
+              status: true
 
   indexQuests:
-        handler: src/index.indexQuests
-        events:
-          - http:
-              path: quests
-              method: get
+    handler: src/index.indexQuests
+    events:
+      - http:
+          path: quests/{status}
+          method: get
+          request:
+            parameters:
+              status: false
 
   completeQuest:
-      handler: src/index.completeQuest
-      events:
-        - http:
-            path: quests/{id}/complete
-            method: post
+    handler: src/index.completeQuest
+    events:
+      - http:
+          path: quests/{id}/complete
+          method: post
 
   destroyQuest:
-        handler: src/index.destroyQuest
-        events:
-          - http:
-              path: quests/{id}
-              method: delete
+    handler: src/index.destroyQuest
+    events:
+      - http:
+          path: quests/{id}
+          method: delete
+          request:
+            parameters:
+              status: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

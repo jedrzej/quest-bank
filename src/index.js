@@ -31,6 +31,7 @@ export async function completeQuest(event, context, callback) {
     const data = await completeQuestCommand.execute(event.pathParameters.id);
     success(data, callback);
   } catch (e) {
+    console.log(e)
     failure(null, callback);
   }
 }
@@ -50,9 +51,10 @@ export async function indexQuests(event, context, callback) {
   const indexQuestCommand = new IndexQuestsCommand(questsService);
 
   try {
-    const data = await indexQuestCommand.execute();
+    const data = await indexQuestCommand.execute(event.pathParameters.status);
     success(data, callback);
   } catch (e) {
+    console.log(e)
     failure(null, callback);
   }
 }

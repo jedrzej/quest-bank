@@ -20,9 +20,10 @@ export default class {
       .then(data => data.Item);
   }
 
-  index () {
+  index (extraParams = {}) {
     const params = {
-      TableName: this.tableName
+      TableName: this.tableName,
+      ...extraParams
     };
 
     return this.db

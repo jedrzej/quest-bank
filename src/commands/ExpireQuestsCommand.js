@@ -15,6 +15,9 @@ export default class {
 
     const expiringQuests = await this.questsService.index(params);
 
-    expiringQuests.forEach(quest => this.questsService.update(quest.id, 'SET isComplete = :isComplete', {':isComplete': true}));
+    return expiringQuests.forEach(quest => {
+      quest.isComplete = true;
+      this.questsService.update(quest.id, 'SET isComplete = :isComplete', {':isComplete': true});
+    });
   }
 }

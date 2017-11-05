@@ -9,6 +9,7 @@ import ShowQuestCommand from './commands/ShowQuestCommand';
 import IndexQuestsCommand from './commands/IndexQuestsCommand';
 import DestroyQuestCommand from './commands/DestroyQuestCommand';
 import CompleteQuestCommand from './commands/CompleteQuestCommand';
+import ExpireQuestsCommand from "./commands/ExpireQuestsCommand";
 
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const questsService = new DynamoDBService(dynamoDbClient, process.env.QUESTS_TABLE_NAME);
@@ -52,6 +53,18 @@ export async function indexQuests(event, context, callback) {
 
   try {
     const data = await indexQuestCommand.execute(event.pathParameters.status);
+    success(data, callback);
+  } catch (e) {
+    console.log(e)
+    failure(null, callback);
+  }
+}
+
+export async function expireQuests(event, context, callback) {
+  const expireQuestsCommand = new ExpireQuestsCommand(questsService);
+
+  try {
+    const data = await expireQuestsCommand.execute();
     success(data, callback);
   } catch (e) {
     console.log(e)

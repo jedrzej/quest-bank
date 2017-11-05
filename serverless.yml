@@ -56,6 +56,12 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  createQuest:
+    handler: src/index.createQuest
+    events:
+      - http:
+          path: quests
+          method: post
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

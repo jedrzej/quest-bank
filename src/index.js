@@ -15,6 +15,7 @@ export async function expireQuests(event, context, callback) {
     const data = await expireQuestsCommand.execute();
     callback(null, {statusCode: 200, body: data});
   } catch (e) {
+    console.log(e);
     callback(null, {statusCode: 500});
 
   }

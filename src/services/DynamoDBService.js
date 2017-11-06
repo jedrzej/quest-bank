@@ -45,14 +45,15 @@ export default class {
     return this.db.put(params).promise().then(() => Item);
   }
 
-  update (id, UpdateExpression, ExpressionAttributeValues) {
+  update (id, UpdateExpression, ExpressionAttributeValues, ConditionExpression) {
     const params = {
       TableName: this.tableName,
       Key: {
         id
       },
       UpdateExpression,
-      ExpressionAttributeValues
+      ExpressionAttributeValues,
+      ConditionExpression
     };
 
     return this.db.update(params).promise();

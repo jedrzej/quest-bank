@@ -8,8 +8,13 @@ export default class {
     this.questsService = questsService;
 
     slack.on('/quest-add', async (msg, bot) => {
+      const matches = msg.trim().match(/([a-z\d\-]+)\s+(https?[^\s]+)\s*(\d\d\d\d\-\d\d\-\d\d)?/i);
+      if (!matches) {
+        return bot.replyPrivate("Invalid questId");
+      }
+
       try {
-        await this.execute("Q Name", "http://test.com");
+        await this.execute(name, detailsLink, endDate);
         bot.replyPrivate('Quest added!');
       } catch (e) {
         bot.replyPrivate('Whoops! There\'s been an error!');

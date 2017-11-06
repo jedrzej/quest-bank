@@ -1,22 +1,22 @@
 ## Available commands
 
 ### Add quest
-/quest-add \<name> \<link> \<?endDate:YYYY-MM-DD>
+/quest-add \<id> \<link> \<?endDate:YYYY-MM-DD>
 
 ### Delete quest
-/quest-delete \<name>
+/quest-delete \<id>
 
 ### Mark quest as complete
-/quest-complete \<name>
+/quest-complete \<id>
 
 ### List active quests
 /quest-list
 
 ### Join quest
-/quest-join \<name>
+/quest-join \<id>
 
 ### Leave quest
-/quest-leave \<name>
+/quest-leave \<id>
 
 ### Enable reminders
 /quest-config reminders on

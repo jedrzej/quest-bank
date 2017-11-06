@@ -4,11 +4,20 @@ import uuid from 'uuid';
 import moment from 'moment-timezone';
 
 export default class {
-  constructor(questsService) {
+  constructor(slack, questsService) {
     this.questsService = questsService;
+
+    slack.on('/quest-add', async (msg, bot) => {
+      try {
+        await this.execute("Q Name", "http://test.com");
+        bot.replyPrivate('Quest added!');
+      } catch (e) {
+        bot.replyPrivate('Whoops! There\'s been an error!');
+      }
+    });
   }
 
-  async execute(name, detailsLink, endDate) {
+  execute(name, detailsLink, endDate) {
     if (endDate !== undefined) {
       endDate = moment.tz(endDate, 'Pacific/Pago_Pago').hours(23).minutes(59).second(59).unix();
     }

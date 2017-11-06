@@ -11,11 +11,10 @@ provider:
   runtime: nodejs6.10
   stage: dev
   region: us-east-1
-
   versionFunctions: false
 
   environment:
-      QUESTS_TABLE_NAME: ${file(./serverless.env.yml):dev.QUESTS_TABLE_NAME}
+    QUESTS_TABLE_NAME: ${file(./serverless.env.yml):dev.QUESTS_TABLE_NAME}
 
   iamRoleStatements:
     - Effect: Allow
@@ -30,55 +29,18 @@ provider:
       Resource: "arn:aws:dynamodb:us-east-1:*:*"
 
 functions:
-  createQuest:
-    handler: src/index.createQuest
+  slack:
+    handler: src/slack.handler
     events:
       - http:
-          path: quests
+          path: slack
           method: post
-
-  showQuest:
-    handler: src/index.showQuest
-    events:
-      - http:
-          path: quests/{id}
-          method: get
-          request:
-            parameters:
-              status: true
-
-  indexQuests:
-    handler: src/index.indexQuests
-    events:
-      - http:
-          path: quests/{status}
-          method: get
-          request:
-            parameters:
-              status: false
-
-  completeQuest:
-    handler: src/index.completeQuest
-    events:
-      - http:
-          path: quests/{id}/complete
-          method: post
-
-  destroyQuest:
-    handler: src/index.destroyQuest
-    events:
-      - http:
-          path: quests/{id}
-          method: delete
-          request:
-            parameters:
-              status: true
 
   expireQuests:
-      handler: src/index.expireQuests
-      events:
-        - schedule:
-            rate: rate(10 minutes)
+    handler: src/index.expireQuests
+    events:
+      - schedule:
+          rate: rate(10 minutes)
 
 resources:
   Resources:

@@ -9,17 +9,8 @@
 ### Mark quest as complete
 /quest-complete \<name>
 
-### Get quest details
-/quest-show \<name>
-
-### List all quests
-/quest-list
-
 ### List active quests
-/quest-list active
-
-### List complete quests
-/quest-list complete
+/quest-list
 
 ### Join quest
 /quest-join \<name>

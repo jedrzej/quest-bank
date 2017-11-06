@@ -7,8 +7,15 @@ export default class {
     this.questsService = questsService;
 
     slack.on('/quest-delete', async (msg, bot) => {
+      const matches = msg.trim().match(/[a-z\d\-]+/i);
+      if (!matches) {
+        return bot.replyPrivate("Invalid questId");
+      }
+
+      const questId = matches[0];
+
       try {
-        await this.execute("5");
+        await this.execute(questId);
         bot.replyPrivate('Quest deleted!');
       } catch (e) {
         bot.replyPrivate('Whoops! There\'s been an error!');
@@ -17,7 +24,7 @@ export default class {
 
   }
 
-  async execute(id) {
-    return this.questsService.delete(id);
+  async execute(questId) {
+    return this.questsService.delete(questId);
   }
 }

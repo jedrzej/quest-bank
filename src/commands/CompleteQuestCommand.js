@@ -7,8 +7,15 @@ export default class {
     this.questsService = questsService;
 
     slack.on('/quest-complete', async (msg, bot) => {
+      const matches = msg.trim().match(/[a-z\d\-]+/i);
+      if (!matches) {
+        return bot.replyPrivate("Invalid questId");
+      }
+
+      const questId = matches[0];
+
       try {
-        await this.execute("5");
+        await this.execute(questId);
         bot.replyPrivate('Quest was marked as complete!');
       } catch (e) {
         bot.replyPrivate('Whoops! There\'s been an error!');
@@ -16,7 +23,7 @@ export default class {
     });
   }
 
-  execute(id) {
-    return this.questsService.update(id, 'SET isComplete = :isComplete', {':isComplete': true});
+  execute(questId) {
+    return this.questsService.update(questId, 'SET isComplete = :isComplete', {':isComplete': true});
   }
 }

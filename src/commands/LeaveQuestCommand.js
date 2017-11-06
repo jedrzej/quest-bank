@@ -7,18 +7,18 @@ export default class {
     this.questsService = questsService;
 
     slack.on('/leave-join', async (msg, bot) => {
-      const matches = msg.trim().match(/[a-z\d\-]+/);
+      const matches = msg.trim().match(/[a-z\d\-]+/i);
       if (!matches) {
-        return;
+        return bot.replyPrivate("Invalid questId");
       }
 
       const questId = matches[0];
 
       try {
         await this.execute(questId, msg.user_id);
-        bot.replyPrivate('You just left a quest!');
+        return bot.replyPrivate('You just left a quest!');
       } catch (e) {
-        bot.replyPrivate((typeof e === 'string') ? e : 'Whoops! There\'s been an error!');
+        return bot.replyPrivate((typeof e === 'string') ? e : 'Whoops! There\'s been an error!');
       }
     });
   }

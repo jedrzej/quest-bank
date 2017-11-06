@@ -7,9 +7,9 @@ export default class {
     this.questsService = questsService;
 
     slack.on('/quest-join', async (msg, bot) => {
-      const matches = msg.trim().match(/[a-z\d\-]+/);
+      const matches = msg.trim().match(/[a-z\d\-]+/i);
       if (!matches) {
-        return;
+        return bot.replyPrivate("Invalid questId");
       }
 
       const questId = matches[0];

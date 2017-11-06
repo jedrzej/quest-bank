@@ -9,9 +9,6 @@
 ### Mark quest as complete
 /quest-complete \<name>
 
-### Get quest details
-/quest-show \<name>
-
 ### List all quests
 /quest-list
 

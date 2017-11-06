@@ -16,20 +16,10 @@ export default class {
     });
   }
 
-  async execute(status) {
-    const params = {};
-
-    switch (status) {
-      case 'active':
-        params.FilterExpression = 'isComplete = :isComplete';
-        params.ExpressionAttributeValues = {':isComplete': false};
-        break;
-      case 'complete':
-        params.FilterExpression = 'isComplete = :isComplete';
-        params.ExpressionAttributeValues = {':isComplete': true};
-        break;
-    }
-
-    return this.questsService.index(params);
+  async execute() {
+    return this.questsService.index({
+      FilterExpression: 'isComplete = :isComplete',
+      ExpressionAttributeValues: {':isComplete': false}
+    });
   }
 }

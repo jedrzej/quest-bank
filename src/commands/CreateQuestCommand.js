@@ -4,8 +4,9 @@ import uuid from 'uuid';
 import moment from 'moment-timezone';
 
 export default class {
-  constructor(slack, questsService) {
+  constructor(questsService, userSettingsService) {
     this.questsService = questsService;
+    this.userSettingsService = userSettingsService;
 
     slack.on('/quest-add', async (msg, bot) => {
       const matches = msg.trim().match(/([a-z\d\-]+)\s+(https?[^\s]+)\s*(\d\d\d\d\-\d\d\-\d\d)?/i);
@@ -22,19 +23,28 @@ export default class {
     });
   }
 
-  execute(name, detailsLink, endDate) {
+  async execute(name, detailsLink, endDate) {
     if (endDate !== undefined) {
       endDate = moment.tz(endDate, 'Pacific/Pago_Pago').hours(23).minutes(59).second(59).unix();
     }
 
-    const quest = {
+    const quest = await this.questsService.put({
       id: uuid.v1(),
       name,
       detailsLink,
       endDate,
       isComplete: endDate <= moment().unix()
-    };
+    });
 
-    return this.questsService.put(quest);
+    const usersToNotify = await this.userSettingsService.index({
+      FilterExpression: 'enableNotifications = :enableNotifications',
+      ExpressionAttributeValues: {':enableNotifications': true}
+    });
+
+    usersToNotify.foreach(user => {
+      // notify user
+    });
+
+    return quest;
   }
 }

@@ -18,7 +18,7 @@ const questsService = new DynamoDBService(dynamoDbClient, process.env.QUESTS_TAB
 const userSettingsService = new DynamoDBService(dynamoDbClient, process.env.USER_SETTINGS_TABLE_NAME);
 
 new CompleteQuestCommand(slack, questsService, userSettingsService);
-new CreateQuestCommand(slack, questsService);
+new CreateQuestCommand(slack, questsService, userSettingsService);
 new DestroyQuestCommand(slack, questsService);
 new IndexQuestsCommand(slack, questsService);
 new JoinQuestCommand(slack, questsService);

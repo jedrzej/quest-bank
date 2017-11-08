@@ -3,8 +3,9 @@
 import moment from "moment-timezone";
 
 export default class {
-  constructor(questsService) {
+  constructor(questsService, userSettingsService) {
     this.questsService = questsService;
+    this.userSettingsService = userSettingsService;
   }
 
   async execute() {
@@ -14,10 +15,22 @@ export default class {
     };
 
     const expiringQuests = await this.questsService.index(params);
+    const userSettings = {};
 
     return expiringQuests.forEach(quest => {
       quest.isComplete = true;
       this.questsService.update(quest.id, 'SET isComplete = :isComplete', {':isComplete': true});
+
+      quest.participants.foreach(async userId => {
+        if (userSettings[userId] === undefined) {
+          const currentUserSettings = await this.userSettingsService.get(userId);
+          userSettings[userId] = currentUserSettings.enableNotifications;
+        }
+
+        if (userSettings[userId]) {
+          // notify user
+        }
+      });
     });
   }
 }

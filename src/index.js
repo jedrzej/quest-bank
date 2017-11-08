@@ -7,9 +7,10 @@ import ExpireQuestsCommand from "./commands/ExpireQuestsCommand";
 
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const questsService = new DynamoDBService(dynamoDbClient, process.env.QUESTS_TABLE_NAME);
+const userSettingsService = new DynamoDBService(dynamoDbClient, process.env.USER_SETTINGS_TABLE_NAME);
 
 export async function expireQuests(event, context, callback) {
-  const expireQuestsCommand = new ExpireQuestsCommand(questsService);
+  const expireQuestsCommand = new ExpireQuestsCommand(questsService, userSettingsService);
 
   try {
     const data = await expireQuestsCommand.execute();

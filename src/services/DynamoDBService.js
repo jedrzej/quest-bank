@@ -48,6 +48,7 @@ export default class {
   update (id, UpdateExpression, ExpressionAttributeValues, ConditionExpression) {
     const params = {
       TableName: this.tableName,
+      ReturnValues: 'ALL_NEW',
       Key: {
         id
       },

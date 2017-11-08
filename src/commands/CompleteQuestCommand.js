@@ -3,8 +3,9 @@
 import slack from "serverless-slack";
 
 export default class {
-  constructor(questsService) {
+  constructor(questsService, userSettingsService) {
     this.questsService = questsService;
+    this.userSettingsService = userSettingsService;
 
     slack.on('/quest-complete', async (msg, bot) => {
       const matches = msg.trim().match(/[a-z\d\-]+/i);
@@ -23,7 +24,22 @@ export default class {
     });
   }
 
-  execute(questId) {
-    return this.questsService.update(questId, 'SET isComplete = :isComplete', {':isComplete': true});
+  async execute(questId) {
+    const quest = await this.questsService.update(questId, 'SET isComplete = :isComplete', {':isComplete': true});
+
+    const userSettings = {};
+
+    quest.participants.foreach(async userId => {
+      if (userSettings[userId] === undefined) {
+        const currentUserSettings = await this.userSettingsService.get(userId);
+        userSettings[userId] = currentUserSettings.enableNotifications;
+      }
+
+      if (userSettings[userId]) {
+        // notify user
+      }
+    });
+
+    return quest;
   }
 }

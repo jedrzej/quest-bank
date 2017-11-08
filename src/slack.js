@@ -17,7 +17,7 @@ const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const questsService = new DynamoDBService(dynamoDbClient, process.env.QUESTS_TABLE_NAME);
 const userSettingsService = new DynamoDBService(dynamoDbClient, process.env.USER_SETTINGS_TABLE_NAME);
 
-new CompleteQuestCommand(slack, questsService);
+new CompleteQuestCommand(slack, questsService, userSettingsService);
 new CreateQuestCommand(slack, questsService);
 new DestroyQuestCommand(slack, questsService);
 new IndexQuestsCommand(slack, questsService);

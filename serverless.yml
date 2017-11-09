@@ -42,6 +42,12 @@ functions:
       - schedule:
           rate: rate(10 minutes)
 
+  remindAboutQuests:
+      handler: src/index.remindAboutQuests
+      events:
+        - schedule:
+            rate: rate(1 hour)
+
 resources:
   Resources:
     QuestsDynamoDBTable:

@@ -10,11 +10,11 @@ export default class {
 
   async execute() {
     const params = {
-      FilterExpression: 'isComplete = :isComplete AND isReminded != :isReminded AND endDate <= :plusOneDay',
+      FilterExpression: 'isComplete = :isComplete AND needsReminder = :needsReminder AND endDate <= :plusOneDay',
       ExpressionAttributeValues: {
         ':isComplete': false,
         ':plusOneDay': moment().unix() + 24*3600,
-        ':isReminded': true
+        ':needsReminder': true
       }
     };
 
@@ -32,7 +32,7 @@ export default class {
           // notify user
         }
       });
-      await this.questsService.update(quest.id, 'SET isReminded = :isReminded', {':isReminded': true});
+      await this.questsService.update(quest.id, 'SET needsReminder = :needsReminder', {':needsReminder': false});
     });
   }
 }

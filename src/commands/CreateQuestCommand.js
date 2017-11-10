@@ -33,7 +33,8 @@ export default class {
       name,
       detailsLink,
       endDate,
-      isComplete: endDate <= moment().unix()
+      isComplete: endDate <= moment().unix(),
+      isReminded: (endDate - moment().unix() < 24*3600)
     });
 
     const usersToNotify = await this.userSettingsService.index({

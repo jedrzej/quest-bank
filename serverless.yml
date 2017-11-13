@@ -30,20 +30,20 @@ provider:
 
 functions:
   slack:
-    handler: src/slack.handler
+    handler: build/slack.handler
     events:
       - http:
           path: slack
           method: post
 
   expireQuests:
-    handler: src/index.expireQuests
+    handler: build/index.expireQuests
     events:
       - schedule:
           rate: rate(10 minutes)
 
   remindAboutQuests:
-      handler: src/index.remindAboutQuests
+      handler: build/index.remindAboutQuests
       events:
         - schedule:
             rate: rate(1 hour)

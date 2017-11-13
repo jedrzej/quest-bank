@@ -9,6 +9,7 @@ node_modules
 
 # Build files
 .webpack
+build
 
 # Configuration
 serverless.env.yml

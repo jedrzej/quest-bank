@@ -1,11 +1,12 @@
 'use strict';
 
 import moment from 'moment-timezone';
-import slack from 'serverless-slack';
 import uuid from 'uuid';
 
 export default class {
-  constructor (questsService, userSettingsService) {
+  constructor (slack, questsService, userSettingsService) {
+    console.log('CreateQuestCommand constructor');
+
     this.questsService = questsService;
     this.userSettingsService = userSettingsService;
 

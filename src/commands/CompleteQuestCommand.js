@@ -1,9 +1,7 @@
 'use strict';
 
-import slack from 'serverless-slack';
-
 export default class {
-  constructor (questsService, userSettingsService) {
+  constructor (slack, questsService, userSettingsService) {
     this.questsService = questsService;
     this.userSettingsService = userSettingsService;
 

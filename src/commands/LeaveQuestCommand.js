@@ -1,9 +1,7 @@
 'use strict';
 
-import slack from 'serverless-slack';
-
 export default class {
-  constructor (questsService) {
+  constructor (slack, questsService) {
     this.questsService = questsService;
 
     slack.on('/leave-join', async (msg, bot) => {

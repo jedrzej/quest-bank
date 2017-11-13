@@ -1,9 +1,9 @@
 'use strict';
 
-import slack from "serverless-slack";
+import slack from 'serverless-slack';
 
 export default class {
-  constructor(questsService) {
+  constructor (questsService) {
     this.questsService = questsService;
 
     slack.on('/quest-list', async (msg, bot) => {
@@ -16,10 +16,10 @@ export default class {
     });
   }
 
-  async execute() {
+  execute () {
     return this.questsService.index({
       FilterExpression: 'isComplete = :isComplete',
-      ExpressionAttributeValues: {':isComplete': false}
+      ExpressionAttributeValues: { ':isComplete': false }
     });
   }
 }

@@ -6,6 +6,9 @@
   },
   "parserOptions": {
     "ecmaVersion": 2017,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    },
     "sourceType": "module"
   },
   "extends": "eslint:recommended",
@@ -75,7 +78,7 @@
     "max-len": "off",
     "max-lines": "error",
     "max-nested-callbacks": "error",
-    "max-params": "error",
+    "max-params": ["error", 4],
     "max-statements": "off",
     "max-statements-per-line": "error",
     "multiline-ternary": "off",
@@ -90,6 +93,7 @@
     "no-caller": "error",
     "no-catch-shadow": "error",
     "no-confusing-arrow": "error",
+    "no-console": "off",
     "no-continue": "error",
     "no-div-regex": "error",
     "no-duplicate-imports": "error",

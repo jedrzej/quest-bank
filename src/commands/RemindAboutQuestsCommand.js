@@ -1,19 +1,20 @@
 'use strict';
 
-import moment from "moment-timezone";
+import moment from 'moment-timezone';
 
 export default class {
-  constructor(questsService, userSettingsService) {
+  constructor (questsService, userSettingsService) {
     this.questsService = questsService;
     this.userSettingsService = userSettingsService;
   }
 
-  async execute() {
+  async execute () {
+    const secondsInDay = 24 * 3600;
     const params = {
       FilterExpression: 'isComplete = :isComplete AND needsReminder = :needsReminder AND endDate <= :plusOneDay',
       ExpressionAttributeValues: {
         ':isComplete': false,
-        ':plusOneDay': moment().unix() + 24*3600,
+        ':plusOneDay': moment().unix() + secondsInDay,
         ':needsReminder': true
       }
     };
@@ -23,16 +24,17 @@ export default class {
 
     return questsThatExpireIn24hours.forEach(async quest => {
       quest.participants.foreach(async userId => {
-        if (userSettings[userId] === undefined) {
+        if (typeof userSettings[userId] === 'undefined') {
           const currentUserSettings = await this.userSettingsService.get(userId);
+
           userSettings[userId] = currentUserSettings.enableNotifications;
         }
 
         if (userSettings[userId]) {
-          // notify user
+          // Notify user
         }
       });
-      await this.questsService.update(quest.id, 'SET needsReminder = :needsReminder', {':needsReminder': false});
+      await this.questsService.update(quest.id, 'SET needsReminder = :needsReminder', { ':needsReminder': false });
     });
   }
 }

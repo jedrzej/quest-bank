@@ -7,7 +7,7 @@ import slack from "serverless-slack";
 
 import CreateQuestCommand from './commands/CreateQuestCommand';
 import IndexQuestsCommand from './commands/IndexQuestsCommand';
-import DestroyQuestCommand from './commands/DestroyQuestCommand';
+import DeleteQuestCommand from './commands/DeleteQuestCommand';
 import CompleteQuestCommand from './commands/CompleteQuestCommand';
 import JoinQuestCommand from "./commands/JoinQuestCommand";
 import LeaveQuestCommand from "./commands/LeaveQuestCommand";
@@ -19,7 +19,7 @@ const userSettingsService = new DynamoDBService(dynamoDbClient, process.env.USER
 
 new CompleteQuestCommand(slack, questsService, userSettingsService);
 new CreateQuestCommand(slack, questsService, userSettingsService);
-new DestroyQuestCommand(slack, questsService);
+new DeleteQuestCommand(slack, questsService);
 new IndexQuestsCommand(slack, questsService);
 new JoinQuestCommand(slack, questsService);
 new LeaveQuestCommand(slack, questsService);

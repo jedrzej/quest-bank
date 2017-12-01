@@ -3,7 +3,7 @@
 import Logger from '../utils/Logger';
 
 export default class {
-  constructor (slack, userSettingsService) {
+  constructor(slack, userSettingsService) {
     this.userSettingsService = userSettingsService;
     this.logger = new Logger('UpdateSettingsCommand');
 
@@ -14,8 +14,6 @@ export default class {
       if (!matches) {
         return bot.replyPrivate('Invalid option value');
       }
-
-      this.logger.log('Matches', matches);
 
       const enableNotifications = matches[1] === 'on';
 
@@ -29,7 +27,7 @@ export default class {
     });
   }
 
-  execute (userId, enableNotifications) {
+  execute(userId, enableNotifications) {
     return this.userSettingsService.put({
       id: userId,
       enableNotifications

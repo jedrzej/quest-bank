@@ -3,15 +3,15 @@
 import moment from 'moment-timezone';
 
 export default class {
-  constructor (questsService, userSettingsService) {
+  constructor(questsService, userSettingsService) {
     this.questsService = questsService;
     this.userSettingsService = userSettingsService;
   }
 
-  async execute () {
+  async execute() {
     const params = {
       FilterExpression: 'isComplete = :isComplete AND endDate <= :now',
-      ExpressionAttributeValues: { ':isComplete': false, ':now': moment().unix() }
+      ExpressionAttributeValues: {':isComplete': false, ':now': moment().unix()}
     };
 
     const expiringQuests = await this.questsService.index(params);
@@ -19,7 +19,7 @@ export default class {
 
     return expiringQuests.forEach(quest => {
       quest.isComplete = true;
-      this.questsService.update(quest.id, 'SET isComplete = :isComplete', { ':isComplete': true });
+      this.questsService.update(quest.id, 'SET isComplete = :isComplete', {':isComplete': true});
 
       quest.participants.foreach(async userId => {
         if (typeof userSettings[userId] === 'undefined') {

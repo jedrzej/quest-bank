@@ -1,7 +1,7 @@
 'use strict';
 
 export default class {
-  constructor (slack, questsService) {
+  constructor(slack, questsService) {
     this.questsService = questsService;
 
     slack.on('/quest-list', async (msg, bot) => {
@@ -14,10 +14,10 @@ export default class {
     });
   }
 
-  execute () {
+  execute() {
     return this.questsService.index({
       FilterExpression: 'isComplete = :isComplete',
-      ExpressionAttributeValues: { ':isComplete': false }
+      ExpressionAttributeValues: {':isComplete': false}
     });
   }
 }

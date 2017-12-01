@@ -1,12 +1,12 @@
 'use strict';
 
 export default class {
-  constructor (documentClient, tableName) {
+  constructor(documentClient, tableName) {
     this.db = documentClient;
     this.tableName = tableName;
   }
 
-  get (id) {
+  get(id) {
     const params = {
       TableName: this.tableName,
       Key: {
@@ -20,7 +20,7 @@ export default class {
       .then(data => data.Item);
   }
 
-  index (extraParams) {
+  index(extraParams) {
     const params = {
       TableName: this.tableName,
       ...extraParams
@@ -32,7 +32,7 @@ export default class {
       .then(data => data.Items);
   }
 
-  put (Item) {
+  put(Item) {
     if (!Item.id) {
       return Promise.reject('Item.id is not defined!');
     }
@@ -45,7 +45,7 @@ export default class {
     return this.db.put(params).promise().then(() => Item);
   }
 
-  update (id, UpdateExpression, ExpressionAttributeValues, ConditionExpression) {
+  update(id, UpdateExpression, ExpressionAttributeValues, ConditionExpression) {
     const params = {
       TableName: this.tableName,
       ReturnValues: 'ALL_NEW',
@@ -60,7 +60,7 @@ export default class {
     return this.db.update(params).promise();
   }
 
-  delete (id) {
+  delete(id) {
     const params = {
       TableName: this.tableName,
       Key: {

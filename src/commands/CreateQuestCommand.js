@@ -2,23 +2,23 @@
 
 import moment from 'moment-timezone';
 import uuid from 'uuid';
+import Logger from '../utils/Logger';
 
 export default class {
   constructor (slack, questsService, userSettingsService) {
-    console.log('CreateQuestCommand constructor');
-
     this.questsService = questsService;
     this.userSettingsService = userSettingsService;
+    this.logger = new Logger('CreateQuestCommand');
 
     slack.on('/quest-add', async (msg, bot) => {
-      console.log(msg);
-      const matches = msg.trim().match(/([a-z\d-]+)\s+(https?[^\s]+)\s*(\d\d\d\d-\d\d-\d\d)?/i);
+      this.logger.log('Processing message', msg.text);
+      const matches = msg.text.trim().match(/([a-z\d-]+)\s+(https?[^\s]+)\s*(\d\d\d\d-\d\d-\d\d)?/i);
 
       if (!matches) {
         return bot.replyPrivate('Invalid questId');
       }
 
-      console.log(matches);
+      this.logger.log('Matches', matches);
 
       const name = matches[1];
       const detailsLink = matches[2];
@@ -26,9 +26,10 @@ export default class {
 
       try {
         await this.execute(name, detailsLink, endDate);
-        return bot.replyPrivate('Quest added!');
+        bot.replyPrivate('Quest added!');
       } catch (e) {
-        return bot.replyPrivate('Whoops! There\'s been an error!');
+        this.logger.error(e);
+        bot.replyPrivate('Whoops! There\'s been an error!');
       }
     });
   }
@@ -54,7 +55,7 @@ export default class {
       ExpressionAttributeValues: { ':enableNotifications': true }
     });
 
-    usersToNotify.foreach(user => {
+    usersToNotify.forEach(user => {
       // Notify user
     });
 

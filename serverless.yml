@@ -14,7 +14,9 @@ provider:
   versionFunctions: false
 
   environment:
+    TABLE_NAME: ${file(./serverless.env.yml):dev.SLACK_TABLE_NAME}
     QUESTS_TABLE_NAME: ${file(./serverless.env.yml):dev.QUESTS_TABLE_NAME}
+    USER_SETTINGS_TABLE_NAME: ${file(./serverless.env.yml):dev.USER_SETTINGS_TABLE_NAME}
 
   iamRoleStatements:
     - Effect: Allow
@@ -35,6 +37,7 @@ functions:
       - http:
           path: slack
           method: post
+          integration: lambda
 
   expireQuests:
     handler: build/index.expireQuests
@@ -50,6 +53,22 @@ functions:
 
 resources:
   Resources:
+    SlackDynamoDBTable:
+        Type: 'AWS::DynamoDB::Table'
+        DeletionPolicy: Retain
+        Properties:
+          AttributeDefinitions:
+            -
+              AttributeName: id
+              AttributeType: S
+          KeySchema:
+            -
+              AttributeName: id
+              KeyType: HASH
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+          TableName: ${file(./serverless.env.yml):dev.SLACK_TABLE_NAME}
     QuestsDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain

@@ -1,11 +1,15 @@
 'use strict';
 
+import Logger from '../utils/Logger';
+
 export default class {
-  constructor (slack, questsService) {
+  constructor(slack, questsService) {
     this.questsService = questsService;
+    this.logger = new Logger('JoinQuestCommand');
 
     slack.on('/quest-join', async (msg, bot) => {
-      const matches = msg.trim().match(/[a-z\d-]+/i);
+      this.logger.log('Processing message', msg.text);
+      const matches = msg.text.trim().match(/[a-z\d-]+/i);
 
       if (!matches) {
         return bot.replyPrivate('Invalid questId');
@@ -17,19 +21,18 @@ export default class {
         await this.execute(questId, msg.user_id);
         return bot.replyPrivate('You just joined a quest!');
       } catch (e) {
+        this.logger.error(e);
         return bot.replyPrivate(e.message);
       }
     });
   }
 
-  async execute (questId, userId) {
+  async execute(questId, userId) {
     const quest = await this.questsService.get(questId);
 
     if (!quest) {
       throw new Error('Invalid questId');
     }
-
-    quest.participants = quest.participants || [];
 
     if (quest.participants.includes(userId)) {
       throw new Error('You are already on this quest!');
@@ -37,6 +40,6 @@ export default class {
 
     quest.participants.push(userId);
 
-    return this.questsService.update(questId, 'SET participants = :participants', { ':participants': quest.participants });
+    return this.questsService.update(questId, 'SET participants = :participants', {':participants': quest.participants});
   }
 }

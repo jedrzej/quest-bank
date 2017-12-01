@@ -1,11 +1,15 @@
 'use strict';
 
-export default class {
-  constructor (slack, questsService) {
-    this.questsService = questsService;
+import Logger from '../utils/Logger';
 
-    slack.on('/leave-join', async (msg, bot) => {
-      const matches = msg.trim().match(/[a-z\d-]+/i);
+export default class {
+  constructor(slack, questsService) {
+    this.questsService = questsService;
+    this.logger = new Logger('LaveQuestCommand');
+
+    slack.on('/quest-leave', async (msg, bot) => {
+      this.logger.log('Processing message', msg.text);
+      const matches = msg.text.trim().match(/[a-z\d-]+/i);
 
       if (!matches) {
         return bot.replyPrivate('Invalid questId');
@@ -17,19 +21,18 @@ export default class {
         await this.execute(questId, msg.user_id);
         return bot.replyPrivate('You just left a quest!');
       } catch (e) {
+        this.logger.error(e);
         return bot.replyPrivate(e.message);
       }
     });
   }
 
-  async execute (questId, userId) {
+  async execute(questId, userId) {
     const quest = await this.questsService.get(questId);
 
     if (!quest) {
       throw new Error('Invalid questId');
     }
-
-    quest.participants = quest.participants || [];
 
     if (!quest.participants.includes(userId)) {
       throw new Error('You are not on this quest!');

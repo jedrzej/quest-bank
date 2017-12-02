@@ -25,4 +25,8 @@ new JoinQuestCommand(slack, questsService);
 new LeaveQuestCommand(slack, questsService);
 new UpdateSettingsCommand(slack, userSettingsService);
 
+slack.on('*', async (msg, bot) => {
+  console.log('MSG', msg);
+});
+
 export const handler = slack.handler.bind(slack);

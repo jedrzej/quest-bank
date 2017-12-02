@@ -26,7 +26,7 @@ export default class {
 
       try {
         const quest = await this.execute(name, detailsLink, endDate);
-        this.logger.log('Created quest ' + questId, quest);
+        this.logger.log('Created quest ' + quest.id, quest);
         bot.replyPrivate('Quest added! ID: ' + quest.id);
       } catch (e) {
         this.logger.error(e);
@@ -47,8 +47,8 @@ export default class {
       name,
       detailsLink,
       parsedEndDate,
-      isComplete: parsedEndDate && parsedEndDate <= moment().unix(),
-      needsReminder: parsedEndDate && parsedEndDate - moment().unix() > 24 * 3600,
+      isComplete: !!(parsedEndDate && parsedEndDate <= moment().unix()),
+      needsReminder: !!(parsedEndDate && parsedEndDate - moment().unix() > 24 * 3600),
       participants: []
     };
 

@@ -5,7 +5,7 @@ import Logger from '../utils/Logger';
 export default class {
   constructor(slack, questsService) {
     this.questsService = questsService;
-    this.logger = new Logger('LaveQuestCommand');
+    this.logger = new Logger('LeaveQuestCommand');
 
     slack.on('/quest-leave', async (msg, bot) => {
       this.logger.log('Processing message', msg.text);

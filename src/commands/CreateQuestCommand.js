@@ -25,7 +25,7 @@ export default class {
       const endDate = matches[3];
 
       try {
-        const quest = await this.execute(name, detailsLink, endDate);
+        const quest = await this.execute(name, null, detailsLink, endDate);
         this.logger.log('Created quest ' + quest.id, quest);
         bot.replyPrivate('Quest added! ID: ' + quest.id);
       } catch (e) {
@@ -35,7 +35,7 @@ export default class {
     });
   }
 
-  async execute(name, detailsLink, endDate) {
+  async execute(name, description, detailsLink, endDate) {
     let parsedEndDate;
 
     if (typeof endDate !== 'undefined') {
@@ -45,6 +45,7 @@ export default class {
     const quest = {
       id: uuid.v1(),
       name,
+      description,
       detailsLink,
       parsedEndDate,
       isComplete: !!(parsedEndDate && parsedEndDate <= moment().unix()),

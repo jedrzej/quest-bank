@@ -1,47 +1,55 @@
 'use strict';
 
 import Logger from '../utils/Logger';
+import IndexQuestsCommand from "./IndexQuestsCommand";
+
+const logger = new Logger('LeaveQuestCommand');
 
 export default class {
   constructor(slack, questsService) {
     this.questsService = questsService;
-    this.logger = new Logger('LeaveQuestCommand');
 
-    slack.on('/quest-leave', async (msg, bot) => {
-      this.logger.log('Processing message', msg.text);
-      const matches = msg.text.trim().match(/[a-z\d-]+/i);
-
-      if (!matches) {
-        return bot.replyPrivate('Invalid questId');
+    slack.on('*', async (payload, client) => {
+      if (payload.token !== process.env.SLACK_VERIFICATION_TOKEN) {
+        logger.log('Forbidden');
+        return;
       }
 
-      const questId = matches[0];
+      this.client = client;
 
       try {
-        await this.execute(questId, msg.user_id);
-        return bot.replyPrivate('You just left a quest!');
+        await this.handle(payload)
       } catch (e) {
-        this.logger.error(e);
-        return bot.replyPrivate(e.message);
+        logger.log('ERROR', e.message);
       }
     });
   }
 
-  async execute(questId, userId) {
-    const quest = await this.questsService.get(questId);
+  async handle(payload) {
+    if (payload.type === 'interactive_message' && payload.actions.length && payload.actions[0].name === 'leave') {
+      const userId = payload.user.id;
+      const quest = await this.questsService.get(payload.callback_id);
+      if (quest.participants.includes(userId)) {
+        await this.leaveQuest(quest, userId);
+      }
 
-    if (!quest) {
-      throw new Error('Invalid questId');
+      const indexQuestsCommand = new IndexQuestsCommand(null, this.questsService);
+      const quests = await indexQuestsCommand.getAvailableQuests();
+      if (quests.length) {
+        const message = indexQuestsCommand.buildQuestListForUser(quests, userId, payload.channel.id);
+        message.trigger_id = payload.trigger_id;
+        message.message_ts = payload.message_ts;
+
+        logger.log('SENDING', message);
+        this.client.send('chat.postMessage', message).catch((e) => {throw new Error(e.error)});
+      }
     }
+  }
 
-    if (!quest.participants.includes(userId)) {
-      throw new Error('You are not on this quest!');
-    }
-
+  leaveQuest(quest, userId) {
     const updatedParticipants = quest.participants.filter(participantId => participantId !== userId);
-
     return this.questsService.update(
-      questId,
+      quest.id,
       'SET participants = :updatedParticipants',
       {
         ':updatedParticipants': updatedParticipants,

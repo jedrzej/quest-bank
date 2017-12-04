@@ -1,40 +1,51 @@
 'use strict';
 
 import Logger from '../utils/Logger';
+import IndexQuestsCommand from "./IndexQuestsCommand";
+
+const logger = new Logger('DeleteQuestCommand');
 
 export default class {
   constructor(slack, questsService) {
     this.questsService = questsService;
-    this.logger = new Logger('DeleteQuestCommand');
 
-    slack.on('/quest-delete', async (msg, bot) => {
-      this.logger.log('Processing message', msg.text);
-      const matches = msg.text.trim().match(/[a-z\d-]+/i);
-
-      if (!matches) {
-        return bot.replyPrivate('Invalid questId');
+    slack.on('*', async (payload, client) => {
+      if (payload.token !== process.env.SLACK_VERIFICATION_TOKEN) {
+        logger.log('Forbidden');
+        return;
       }
 
-      const questId = matches[0];
+      this.client = client;
 
       try {
-        await this.execute(questId);
-        return bot.replyPrivate('Quest deleted!');
+        await this.handle(payload)
       } catch (e) {
-        this.logger.error(e);
-        return bot.replyPrivate(e.message);
+        logger.log('ERROR', e.message);
       }
     });
-
   }
 
-  async execute(questId) {
-    const quest = await this.questsService.get(questId);
+  async handle(payload) {
+    if (payload.type === 'interactive_message' && payload.actions.length && payload.actions[0].name === 'delete') {
+      const quest = await this.questsService.get(payload.callback_id);
+      if (quest) {
+        await this.deleteQuest(quest);
+      }
 
-    if (!quest) {
-      throw new Error('Invalid questId');
+      const indexQuestsCommand = new IndexQuestsCommand(null, this.questsService);
+      const quests = await indexQuestsCommand.getAvailableQuests();
+      if (quests.length) {
+        const message = indexQuestsCommand.buildQuestListForUser(quests, payload.user.id, payload.channel.id);
+        message.trigger_id = payload.trigger_id;
+        message.message_ts = payload.message_ts;
+
+        logger.log('SENDING', message);
+        this.client.send('chat.postMessage', message).catch((e) => {throw new Error(e.error)});
+      }
     }
+  }
 
-    return this.questsService.delete(questId);
+  async deleteQuest(quest) {
+    return this.questsService.delete(quest.id);
   }
 }

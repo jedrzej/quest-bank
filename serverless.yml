@@ -17,6 +17,8 @@ provider:
     TABLE_NAME: ${file(./serverless.env.yml):dev.SLACK_TABLE_NAME}
     QUESTS_TABLE_NAME: ${file(./serverless.env.yml):dev.QUESTS_TABLE_NAME}
     USER_SETTINGS_TABLE_NAME: ${file(./serverless.env.yml):dev.USER_SETTINGS_TABLE_NAME}
+    OAUTH_ACCESS_TOKEN: ${file(./serverless.env.yml):dev.OAUTH_ACCESS_TOKEN}
+    SLACK_VERIFICATION_TOKEN: ${file(./serverless.env.yml):dev.SLACK_VERIFICATION_TOKEN}
 
   iamRoleStatements:
     - Effect: Allow

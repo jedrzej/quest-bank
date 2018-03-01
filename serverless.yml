@@ -9,7 +9,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs6.10
-  stage: dev
+  stage: prod
   region: us-east-1
   versionFunctions: false
 
@@ -19,6 +19,7 @@ provider:
     USER_SETTINGS_TABLE_NAME: ${file(./serverless.env.yml):dev.USER_SETTINGS_TABLE_NAME}
     OAUTH_ACCESS_TOKEN: ${file(./serverless.env.yml):dev.OAUTH_ACCESS_TOKEN}
     SLACK_VERIFICATION_TOKEN: ${file(./serverless.env.yml):dev.SLACK_VERIFICATION_TOKEN}
+    SLACK_ADMINS: ${file(./serverless.env.yml):dev.SLACK_ADMINS}
 
   iamRoleStatements:
     - Effect: Allow

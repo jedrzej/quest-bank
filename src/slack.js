@@ -3,15 +3,15 @@
 import AWS from 'aws-sdk';
 import DynamoDBService from './services/DynamoDBService';
 
-import slack from "serverless-slack";
+import slack from 'serverless-slack';
 
 import CreateQuestCommand from './commands/CreateQuestCommand';
 import IndexQuestsCommand from './commands/IndexQuestsCommand';
 import DeleteQuestCommand from './commands/DeleteQuestCommand';
 import CompleteQuestCommand from './commands/CompleteQuestCommand';
-import JoinQuestCommand from "./commands/JoinQuestCommand";
-import LeaveQuestCommand from "./commands/LeaveQuestCommand";
-import UpdateSettingsCommand from "./commands/UpdateSettingsCommand";
+import JoinQuestCommand from './commands/JoinQuestCommand';
+import LeaveQuestCommand from './commands/LeaveQuestCommand';
+import UpdateSettingsCommand from './commands/UpdateSettingsCommand';
 
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const questsService = new DynamoDBService(dynamoDbClient, process.env.QUESTS_TABLE_NAME);
@@ -25,7 +25,7 @@ new JoinQuestCommand(slack, questsService);
 new LeaveQuestCommand(slack, questsService);
 new UpdateSettingsCommand(slack, userSettingsService);
 
-slack.on('*', async (msg, bot) => {
+slack.on('*', msg => {
   console.log('MSG', msg);
 });
 

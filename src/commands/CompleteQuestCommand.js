@@ -1,6 +1,7 @@
 'use strict';
 
 import Logger from '../utils/Logger';
+import isAdmin from '../utils/isAdmin';
 import IndexQuestsCommand from './IndexQuestsCommand';
 
 const logger = new Logger('JoinQuestCommand');
@@ -28,6 +29,11 @@ export default class {
 
   async handle(payload) {
     if (payload.type === 'interactive_message' && payload.actions.length && payload.actions[0].name === 'complete') {
+
+      if (!isAdmin(payload)) {
+        return;
+      }
+
       const quest = await this.questsService.get(payload.callback_id);
 
       if (quest && !quest.isComplete) {

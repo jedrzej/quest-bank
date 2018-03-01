@@ -5,15 +5,15 @@ export default class Logger {
     this.name = name;
   }
 
-  log() {
-    console.log(this.name + ':', ...arguments);
+  log(...args) {
+    console.log(`${this.name}:`, ...args);
   }
 
-  warn() {
-    console.warn(this.name + ':', ...arguments);
+  warn(...args) {
+    console.warn(`${this.name}:`, ...args);
   }
 
-  error() {
-    console.error(this.name + ':', ...arguments);
+  error(...args) {
+    console.error(`${this.name}:`, ...args);
   }
 }

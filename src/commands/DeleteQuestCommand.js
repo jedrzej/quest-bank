@@ -2,6 +2,7 @@
 
 import Logger from '../utils/Logger';
 import IndexQuestsCommand from './IndexQuestsCommand';
+import isAdmin from '../utils/isAdmin';
 
 const logger = new Logger('DeleteQuestCommand');
 
@@ -27,6 +28,11 @@ export default class {
 
   async handle(payload) {
     if (payload.type === 'interactive_message' && payload.actions.length && payload.actions[0].name === 'delete') {
+
+      if (!isAdmin(payload)) {
+        return;
+      }
+
       const quest = await this.questsService.get(payload.callback_id);
 
       if (quest) {

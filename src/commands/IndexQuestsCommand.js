@@ -1,6 +1,7 @@
 'use strict';
 
 import Logger from '../utils/Logger';
+import isAdmin from '../utils/isAdmin';
 
 const logger = new Logger('IndexQuestCommand');
 
@@ -69,7 +70,12 @@ export default class {
             'text': quest.participants.includes(user_id) ? 'Leave quest' : 'Join quest',
             'type': 'button',
             'value': quest.id,
-          },
+          }
+        ]
+      };
+
+      if (isAdmin({ user_id })) {
+        questAttachment.actions = questAttachment.actions.concat([
           {
             'name': 'complete',
             'text': 'End quest',
@@ -95,9 +101,9 @@ export default class {
               'ok_text': 'Yes',
               'dismiss_text': 'No'
             }
-          },
-        ]
-      };
+          }
+        ]);
+      }
 
       attachments.push(questAttachment);
     });

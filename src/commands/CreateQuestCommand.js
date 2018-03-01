@@ -3,6 +3,7 @@
 import moment from 'moment-timezone';
 import uuid from 'uuid';
 import Logger from '../utils/Logger';
+import isAdmin from '../utils/isAdmin';
 
 export default class {
   constructor(slack, questsService, userSettingsService) {
@@ -11,11 +12,15 @@ export default class {
     this.logger = new Logger('CreateQuestCommand');
 
     slack.on('/quest-add', async (msg, bot) => {
+      if (!isAdmin(msg)) {
+        return bot.replyPrivate('Only admins are allowed to create quests.');
+      }
+
       this.logger.log('Processing message', msg.text);
       const matches = msg.text.trim().match(/([a-z\d-]+)\s+(https?[^\s]+)\s*(\d{4}-\d{2}-\d{2})?/i);
 
       if (!matches) {
-        return bot.replyPrivate('Invalid questId');
+        return bot.replyPrivate('Invalid command format.');
       }
 
       this.logger.log('Matches', matches);

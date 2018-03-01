@@ -10,6 +10,7 @@ node_modules
 # Build files
 .webpack
 build
+yarn-error.log
 
 # Configuration
 serverless.env.yml

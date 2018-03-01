@@ -31,10 +31,13 @@ export default class {
 
     if (quests.length) {
       const message = this.buildQuestListForUser(quests, payload.user_id, payload.channel_id);
+
       message.trigger_id = payload.trigger_id;
 
       logger.log('SENDING', message);
-      this.client.send('chat.postMessage', message).catch((e) => {throw new Error(e.error)});
+      this.client.send('chat.postMessage', message).catch(e => {
+        throw new Error(e.error);
+      });
     }
   }
 
@@ -73,11 +76,11 @@ export default class {
             'type': 'button',
             'value': quest.id,
             'style': 'danger',
-            "confirm": {
-              "title": "Are you sure?",
-              "text": "Once quest is ended, it cannot be undone",
-              "ok_text": "Yes",
-              "dismiss_text": "No"
+            'confirm': {
+              'title': 'Are you sure?',
+              'text': 'Once quest is ended, it cannot be undone',
+              'ok_text': 'Yes',
+              'dismiss_text': 'No'
             }
           },
           {
@@ -86,11 +89,11 @@ export default class {
             'type': 'button',
             'value': quest.id,
             'style': 'danger',
-            "confirm": {
-              "title": "Are you sure?",
-              "text": "Once quest is deleted, it cannot be undone",
-              "ok_text": "Yes",
-              "dismiss_text": "No"
+            'confirm': {
+              'title': 'Are you sure?',
+              'text': 'Once quest is deleted, it cannot be undone',
+              'ok_text': 'Yes',
+              'dismiss_text': 'No'
             }
           },
         ]
@@ -105,7 +108,7 @@ export default class {
   getAvailableQuests() {
     return this.questsService.index({
       FilterExpression: 'isComplete = :isComplete',
-      ExpressionAttributeValues: {':isComplete': false}
+      ExpressionAttributeValues: { ':isComplete': false }
     });
   }
 }

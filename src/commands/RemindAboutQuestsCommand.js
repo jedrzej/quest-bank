@@ -34,7 +34,7 @@ export default class {
           // Notify user
         }
       });
-      await this.questsService.update(quest.id, 'SET needsReminder = :needsReminder', {':needsReminder': false});
+      await this.questsService.update(quest.id, 'SET needsReminder = :needsReminder', { ':needsReminder': false });
     });
   }
 }

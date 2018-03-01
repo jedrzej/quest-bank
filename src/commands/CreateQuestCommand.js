@@ -26,8 +26,9 @@ export default class {
 
       try {
         const quest = await this.execute(name, null, detailsLink, endDate);
-        this.logger.log('Created quest ' + quest.id, quest);
-        bot.replyPrivate('Quest added! ID: ' + quest.id);
+
+        this.logger.log(`Created quest ${quest.id}`, quest);
+        bot.replyPrivate(`Quest added! ID: ${quest.id}`);
       } catch (e) {
         this.logger.error(e);
         bot.replyPrivate('Whoops! There\'s been an error!');
@@ -48,8 +49,8 @@ export default class {
       description,
       detailsLink,
       parsedEndDate,
-      isComplete: !!(parsedEndDate && parsedEndDate <= moment().unix()),
-      needsReminder: !!(parsedEndDate && parsedEndDate - moment().unix() > 24 * 3600),
+      isComplete: Boolean(parsedEndDate && parsedEndDate <= moment().unix()),
+      needsReminder: Boolean(parsedEndDate && parsedEndDate - moment().unix() > 24 * 3600),
       participants: []
     };
 
@@ -57,7 +58,7 @@ export default class {
 
     const usersToNotify = await this.userSettingsService.index({
       FilterExpression: 'enableNotifications = :enableNotifications',
-      ExpressionAttributeValues: {':enableNotifications': true}
+      ExpressionAttributeValues: { ':enableNotifications': true }
     });
 
     usersToNotify.forEach(user => {

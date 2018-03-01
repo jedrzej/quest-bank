@@ -41,22 +41,24 @@ export default class {
 
   async handleCommand(payload) {
     const matches = payload.text.trim().match(/(on|off)/);
+
     if (!matches) {
       return this.client.replyPrivate('Invalid option value');
     }
 
     const enableNotifications = matches[1] === 'on';
+
     await this.updateEnableNotificationsSetting(payload.user_id, enableNotifications);
-    return bot.replyPrivate(`Notifications have been ${enableNotifications ? 'enabled' : 'disabled'}`);
+    return this.client.replyPrivate(`Notifications have been ${enableNotifications ? 'enabled' : 'disabled'}`);
   }
 
   async handleResponse(payload) {
     if (payload.type === 'interactive_message' && payload.actions.length && payload.actions[0].name === 'disable_notifications') {
       await this.updateEnableNotificationsSetting(payload.user.id, false);
-      return bot.replyPrivate('Notifications have been disabled');
+      return this.client.replyPrivate('Notifications have been disabled');
     } else if (payload.type === 'interactive_message' && payload.actions.length && payload.actions[0].name === 'enable_notifications') {
       await this.updateEnableNotificationsSetting(payload.user.id, true);
-      return bot.replyPrivate('Notifications have been false');
+      return this.client.replyPrivate('Notifications have been false');
     }
   }
 

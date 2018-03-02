@@ -6,8 +6,9 @@ import isAdmin from '../utils/isAdmin';
 const logger = new Logger('IndexQuestCommand');
 
 export default class {
-  constructor(slack, questsService) {
+  constructor(slack, questsService, userSettingsService) {
     this.questsService = questsService;
+    this.userSettingsService = userSettingsService;
 
     if (slack) {
       slack.on('/quest-list', async (payload, client) => {
@@ -30,28 +31,74 @@ export default class {
   async handle(payload) {
     const quests = await this.getAvailableQuests();
 
-    if (quests.length) {
-      const message = this.buildQuestListForUser(quests, payload.user_id, payload.channel_id);
+    const message = await this.buildQuestListForUser(quests, payload.user_id, payload.channel_id);
 
-      message.trigger_id = payload.trigger_id;
+    message.trigger_id = payload.trigger_id;
 
-      logger.log('SENDING', message);
-      this.client.send('chat.postMessage', message).catch(e => {
-        throw new Error(e.error);
-      });
-    }
+    logger.log('SENDING', message);
+    this.client.send('chat.postMessage', message).catch(e => {
+      throw new Error(e.error);
+    });
   }
 
-  buildQuestListForUser(quests, user_id, channel_id) {
-    return {
-      channel: channel_id,
+  async buildQuestListForUser(quests, userId, channelId) {
+    const userSettings = await this.userSettingsService.get(userId);
+
+    const list = {
+      channel: channelId,
       token: process.env.OAUTH_ACCESS_TOKEN,
       text: 'Available quests',
-      attachments: JSON.stringify(this.getAttachmentsForQuestsAndUser(quests, user_id))
+      attachments: this.getAttachmentsForQuestsAndUser(quests, userId)
     };
+
+    if (userSettings.enableNotifications) {
+      list.attachments.push({
+        callback_id: userId,
+        title: 'Notifications',
+        text: 'Notifications are enabled. You will be notified about new quests and be reminded before quest expires.',
+        fallback: 'Notifications',
+        color: 'danger',
+        actions: [
+          {
+            name: 'disable_notifications',
+            text: 'Disable',
+            type: 'button',
+            value: 'disable_notifications',
+            style: 'danger',
+          }
+        ]
+      });
+    } else {
+      list.attachments.push({
+        callback_id: userId,
+        title: 'Notifications',
+        text: 'Notifications are disabled. If you enable notifications, you will be notified about new quests and be reminded before quest expires.',
+        fallback: 'Notifications',
+        color: 'good',
+        actions: [
+          {
+            name: 'enable_notifications',
+            text: 'Enable',
+            type: 'button',
+            value: 'enable_notifications'
+          }
+        ]
+      });
+    }
+
+    list.attachments = JSON.stringify(list.attachments);
+
+    return list;
   }
 
-  getAttachmentsForQuestsAndUser(quests, user_id) {
+  getAttachmentsForQuestsAndUser(quests, userId) {
+    if (!quests.length) {
+      return [{
+        text: 'There are no quests available',
+        color: 'danger'
+      }];
+    }
+
     const attachments = [];
 
     quests.forEach(quest => {
@@ -61,45 +108,45 @@ export default class {
         title_link: quest.detailsLink,
         text: quest.description,
         fallback: quest.name,
-        color: quest.participants.includes(user_id) ? 'good' : 'danger',
+        color: quest.participants.includes(userId) ? 'good' : 'danger',
         footer: quest.parsedEndDate ? 'Ends on:' : null,
         ts: quest.parsedEndDate,
         actions: [
           {
-            'name': quest.participants.includes(user_id) ? 'leave' : 'join',
-            'text': quest.participants.includes(user_id) ? 'Leave quest' : 'Join quest',
-            'type': 'button',
-            'value': quest.id,
+            name: quest.participants.includes(userId) ? 'leave' : 'join',
+            text: quest.participants.includes(userId) ? 'Leave quest' : 'Join quest',
+            type: 'button',
+            value: quest.id,
           }
         ]
       };
 
-      if (isAdmin({ user_id })) {
+      if (isAdmin({ user_id: userId })) {
         questAttachment.actions = questAttachment.actions.concat([
           {
-            'name': 'complete',
-            'text': 'End quest',
-            'type': 'button',
-            'value': quest.id,
-            'style': 'danger',
-            'confirm': {
-              'title': 'Are you sure?',
-              'text': 'Once quest is ended, it cannot be undone',
-              'ok_text': 'Yes',
-              'dismiss_text': 'No'
+            name: 'complete',
+            text: 'End quest',
+            type: 'button',
+            value: quest.id,
+            style: 'danger',
+            confirm: {
+              title: 'Are you sure?',
+              text: 'Once quest is ended, it cannot be undone',
+              ok_text: 'Yes',
+              dismiss_text: 'No'
             }
           },
           {
-            'name': 'delete',
-            'text': 'Delete quest',
-            'type': 'button',
-            'value': quest.id,
-            'style': 'danger',
-            'confirm': {
-              'title': 'Are you sure?',
-              'text': 'Once quest is deleted, it cannot be undone',
-              'ok_text': 'Yes',
-              'dismiss_text': 'No'
+            name: 'delete',
+            text: 'Delete quest',
+            type: 'button',
+            value: quest.id,
+            style: 'danger',
+            confirm: {
+              title: 'Are you sure?',
+              text: 'Once quest is deleted, it cannot be undone',
+              ok_text: 'Yes',
+              dismiss_text: 'No'
             }
           }
         ]);

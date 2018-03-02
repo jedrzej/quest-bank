@@ -20,7 +20,7 @@ const userSettingsService = new DynamoDBService(dynamoDbClient, process.env.USER
 new CompleteQuestCommand(slack, questsService, userSettingsService);
 new CreateQuestCommand(slack, questsService, userSettingsService);
 new DeleteQuestCommand(slack, questsService);
-new IndexQuestsCommand(slack, questsService);
+new IndexQuestsCommand(slack, questsService, userSettingsService);
 new JoinQuestCommand(slack, questsService);
 new LeaveQuestCommand(slack, questsService);
 new UpdateSettingsCommand(slack, userSettingsService);

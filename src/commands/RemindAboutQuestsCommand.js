@@ -11,7 +11,7 @@ export default class {
   async execute() {
     const secondsInDay = 24 * 3600;
     const params = {
-      FilterExpression: 'isComplete = :isComplete AND needsReminder = :needsReminder AND endDate <= :plusOneDay',
+      FilterExpression: 'isComplete = :isComplete AND needsReminder = :needsReminder AND parsedEndDate <= :plusOneDay',
       ExpressionAttributeValues: {
         ':isComplete': false,
         ':plusOneDay': moment().unix() + secondsInDay,

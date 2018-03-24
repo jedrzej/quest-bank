@@ -1,6 +1,7 @@
 'use strict';
 
 import moment from 'moment-timezone';
+import notify from '../utils/notify';
 
 export default class {
   constructor(questsService, userSettingsService) {
@@ -10,7 +11,7 @@ export default class {
 
   async execute() {
     const params = {
-      FilterExpression: 'isComplete = :isComplete AND endDate <= :now',
+      FilterExpression: 'isComplete = :isComplete AND parsedEndDate <= :now',
       ExpressionAttributeValues: { ':isComplete': false, ':now': moment().unix() }
     };
 
@@ -21,7 +22,7 @@ export default class {
       quest.isComplete = true;
       this.questsService.update(quest.id, 'SET isComplete = :isComplete', { ':isComplete': true });
 
-      quest.participants.foreach(async userId => {
+      quest.participants.forEach(async userId => {
         if (typeof userSettings[userId] === 'undefined') {
           const currentUserSettings = await this.userSettingsService.get(userId);
 
@@ -29,7 +30,7 @@ export default class {
         }
 
         if (userSettings[userId]) {
-          // Notify user
+          notify(userId, `Quest "${quest.name} just ended.`);
         }
       });
     });

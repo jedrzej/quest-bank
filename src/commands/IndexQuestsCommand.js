@@ -57,7 +57,7 @@ export default class {
         title: 'Notifications',
         text: 'Notifications are enabled. You will be notified about new quests and be reminded before quest expires.',
         fallback: 'Notifications',
-        color: 'danger',
+        color: 'good',
         actions: [
           {
             name: 'disable_notifications',
@@ -74,7 +74,7 @@ export default class {
         title: 'Notifications',
         text: 'Notifications are disabled. If you enable notifications, you will be notified about new quests and be reminded before quest expires.',
         fallback: 'Notifications',
-        color: 'good',
+        color: 'danger',
         actions: [
           {
             name: 'enable_notifications',

@@ -3,6 +3,7 @@
 import Logger from '../utils/Logger';
 import isAdmin from '../utils/isAdmin';
 import IndexQuestsCommand from './IndexQuestsCommand';
+import notify from '../utils/notify';
 
 const logger = new Logger('JoinQuestCommand');
 
@@ -58,13 +59,13 @@ export default class {
   }
 
   completeQuest(quest) {
-    return this.questsService.update(quest.id, 'SET isComplete = :isComplete', { ':isComplete': true });
+    this.questsService.update(quest.id, 'SET isComplete = :isComplete', { ':isComplete': true });
 
     quest.participants.forEach(async userId => {
       const userSettings = await this.userSettingsService.get(userId);
 
       if (userSettings.enableNotifications) {
-        // Notify user
+        notify(userId, `Quest "${quest.name}" was just completed.`);
       }
     });
   }

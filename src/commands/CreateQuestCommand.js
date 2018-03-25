@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 import uuid from 'uuid';
 import Logger from '../utils/Logger';
 import isAdmin from '../utils/isAdmin';
+import notify from '../utils/notify';
 
 export default class {
   constructor(slack, questsService, userSettingsService) {
@@ -67,7 +68,7 @@ export default class {
     });
 
     usersToNotify.forEach(user => {
-      // Notify user
+      notify(user.id, `Quest "${quest.name}" was just created.`);
     });
 
     return quest;

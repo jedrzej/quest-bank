@@ -30,7 +30,7 @@ export default class {
         }
 
         if (userSettings[userId]) {
-          notify(userId, `Quest "${quest.name} just ended.`);
+          notify(userId, `Quest "${quest.name}" just ended.`);
         }
       });
     });

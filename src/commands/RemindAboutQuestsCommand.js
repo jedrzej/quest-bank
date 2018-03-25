@@ -1,6 +1,7 @@
 'use strict';
 
 import moment from 'moment-timezone';
+import notify from '../utils/notify';
 
 export default class {
   constructor(questsService, userSettingsService) {
@@ -23,7 +24,7 @@ export default class {
     const userSettings = {};
 
     return questsThatExpireIn24hours.forEach(async quest => {
-      quest.participants.foreach(async userId => {
+      quest.participants.forEach(async userId => {
         if (typeof userSettings[userId] === 'undefined') {
           const currentUserSettings = await this.userSettingsService.get(userId);
 
@@ -31,7 +32,7 @@ export default class {
         }
 
         if (userSettings[userId]) {
-          // Notify user
+          notify(userId, `Quest "${quest.name}" ends tomorrow.`);
         }
       });
       await this.questsService.update(quest.id, 'SET needsReminder = :needsReminder', { ':needsReminder': false });
